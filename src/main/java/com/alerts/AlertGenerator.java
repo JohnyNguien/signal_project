@@ -43,11 +43,19 @@ public class AlertGenerator {
     public void evaluateData(Patient patient) {
         // Implementation goes here
         List<PatientRecord> records = patient.getRecords(0, System.currentTimeMillis());
+
         List<Double> systolic = new ArrayList<>();
         List<Double> diastolic = new ArrayList<>();
-        List<Long> timestamps = new ArrayList<>();
         List<Double> bloodSaturation = new ArrayList<>();
-        List<Double> ECG = new ArrayList<>();
+        List<Double> ecg = new ArrayList<>();
+
+        List<Long> systolicTimestamps = new ArrayList<>();
+        List<Long> diastolicTimestamps = new ArrayList<>();
+        List<Long> bloodSaturationTimestamps = new ArrayList<>();
+        List<Long> ecgTimestamps = new ArrayList<>();
+
+
+
         boolean lowBP = false;
         boolean lowO2 = false;
 
@@ -57,10 +65,10 @@ public class AlertGenerator {
             long ts = record.getTimestamp();
 
             //Critical Treshold Alert(Systolic 90<BP<180)
-            if (type.equals("StolicBloodPressure")){
+            if (type.equals("SystolicPressure")){
                 lowBP = false;
                 systolic.add(value);
-                timestamps.add(ts);
+                systolicTimestamps.add(ts);
                 if (value > 180) {
                     triggerAlert(new Alert(String.valueOf(patient.getPatientId()), type + " Too High", ts));
                 }
@@ -71,8 +79,9 @@ public class AlertGenerator {
             }
 
             //Critical Treshold Alert(Diastolic 60<BP<120)
-            else if (type.equals("DiastolicBloodPressure")){
+            else if (type.equals("DiastolicPressure")){
                 diastolic.add(value);
+                diastolicTimestamps.add(ts);
                 if (value > 120) {
                     triggerAlert(new Alert(String.valueOf(patient.getPatientId()), type + " Too High", ts));
                 }
@@ -82,30 +91,38 @@ public class AlertGenerator {
             }
 
             //Critical Treshold Blood Saturation bellow 92%
-            else if (type.equals("BloodSaturation")) {
+            else if (type.equals("Saturation")) {
                 lowO2 = false;
                 bloodSaturation.add(value);
+                bloodSaturationTimestamps.add(ts);
                 if (value < 92) {
                     triggerAlert(new Alert(String.valueOf(patient.getPatientId()), type + " Too Low", ts));
                     lowO2 = true;
                 }
             }
-            else if (lowBP && lowO2) {
-                triggerAlert(new Alert(String.valueOf(patient.getPatientId()), "Hypotensive Hypoxemia", ts));
+            else if (type.equals("Alert")) {
+                triggerAlert(new Alert(String.valueOf(patient.getPatientId()), type, ts));
             }
             else if (type.equals("ECG")){
-                ECG.add(value);
+                ecg.add(value);
+                ecgTimestamps.add(ts);
+            }
+            if (lowBP && lowO2) {
+                triggerAlert(new Alert(String.valueOf(patient.getPatientId()), "Hypotensive Hypoxemia", ts));
             }
 
         }
         //Trend Alert Systolic
-        bloodPressureTrend(patient.getPatientId(), systolic, timestamps, "SystolicBloodPressure");
+        bloodPressureTrend(patient.getPatientId(), systolic, systolicTimestamps, "SystolicPressure");
 
         //Trend Alert Diastolic
-        bloodPressureTrend(patient.getPatientId(), diastolic, timestamps, "DiastolicBloodPressure");
+        bloodPressureTrend(patient.getPatientId(), diastolic, diastolicTimestamps, "DiastolicPressure");
 
         //Trend Alert Blood Oxygen
-        bloodSaturationTrend(patient.getPatientId(), bloodSaturation, timestamps, "BloodSaturation");
+        bloodSaturationTrend(patient.getPatientId(), bloodSaturation, bloodSaturationTimestamps, "Saturation");
+
+        //Trend Alert ECG
+        ECGTrend(patient.getPatientId(), ecg, ecgTimestamps, "ECG");
 
     }
 
@@ -130,7 +147,8 @@ public class AlertGenerator {
 
 
     public void bloodSaturationTrend(int patientId, List<Double> values, List<Long> timestamps, String type) {
-        if (values.size() < 2) return;
+        if (values.size() < 2)
+            return;
 
         for (int i = 1; i < values.size(); i++) {
             double previous = values.get(i - 1);
@@ -145,8 +163,20 @@ public class AlertGenerator {
 
     public void ECGTrend(int patientId, List<Double> values, List<Long> timestamps, String type){
         //assuming to do the window on 5 values
-        if (values.size() < 5) return;
+        int windowSize = 5;
+        if (values.size() < windowSize)
+            return;
 
+        for (int i = windowSize; i < values.size(); i++) {
+            double sum = 0;
+            for (int j = i - windowSize; j < i; j++) {
+                sum += values.get(j);
+            }
+            //assuming more than 1.5 is abnormal
+            if (values.get(i) > (sum / windowSize) * 1.5) {
+                triggerAlert(new Alert(String.valueOf(patientId), type + " Too High Too Fast", timestamps.get(i)));
+            }
+        }
 
     }
 
@@ -158,7 +188,7 @@ public class AlertGenerator {
      *
      * @param alert the alert object containing details about the alert condition
      */
-    private void triggerAlert(Alert alert) {
+    protected void triggerAlert(Alert alert) {
         // Implementation might involve logging the alert or notifying staff
         String condition_type = alert.getCondition();
         AlertFactory alertFactory = new AlertFactory();
@@ -167,5 +197,6 @@ public class AlertGenerator {
         alertType.createAlert(alert.getPatientId(), alert.getCondition(), alert.getTimestamp());
 
     }
+
 }
 
