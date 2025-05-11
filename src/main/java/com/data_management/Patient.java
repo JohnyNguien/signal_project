@@ -40,6 +40,10 @@ public class Patient {
         this.patientRecords.add(record);
     }
 
+    public int getPatientId(){
+        return patientId;
+    }
+
     /**
      * Retrieves a list of PatientRecord objects for this patient that fall within a
      * specified time range.
