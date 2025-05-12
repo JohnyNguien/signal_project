@@ -130,10 +130,10 @@ public class AlertGeneratorTest {
         DataStorage storage = new DataStorage();
         long now = System.currentTimeMillis();
 
-        storage.addPatientData(1, 100.0, "SystolicPressure", now);
-        storage.addPatientData(1, 115.0, "SystolicPressure", now + 1);
-        storage.addPatientData(1, 130.0, "SystolicPressure", now + 2);
-        storage.addPatientData(1, 145.0, "SystolicPressure", now + 3);
+        storage.addPatientData(1, 100.0, "SystolicPressure", now -30);
+        storage.addPatientData(1, 115.0, "SystolicPressure", now - 20);
+        storage.addPatientData(1, 130.0, "SystolicPressure", now - 10);
+        storage.addPatientData(1, 145.0, "SystolicPressure", now);
 
         TestableAlertGenerator generator = new TestableAlertGenerator(storage);
         Patient patient = storage.getAllPatients().get(0);
@@ -147,10 +147,10 @@ public class AlertGeneratorTest {
         DataStorage storage = new DataStorage();
         long now = System.currentTimeMillis();
 
-        storage.addPatientData(1, 150.0, "SystolicPressure", now);
-        storage.addPatientData(1, 135.0, "SystolicPressure", now + 1);
-        storage.addPatientData(1, 120.0, "SystolicPressure", now + 2);
-        storage.addPatientData(1, 105.0, "SystolicPressure", now + 3);
+        storage.addPatientData(1, 150.0, "SystolicPressure", now - 30);
+        storage.addPatientData(1, 135.0, "SystolicPressure", now -20);
+        storage.addPatientData(1, 120.0, "SystolicPressure", now -10);
+        storage.addPatientData(1, 105.0, "SystolicPressure", now);
 
         TestableAlertGenerator generator = new TestableAlertGenerator(storage);
         Patient patient = storage.getAllPatients().get(0);
@@ -165,10 +165,10 @@ public class AlertGeneratorTest {
         DataStorage storage = new DataStorage();
         long now = System.currentTimeMillis();
 
-        storage.addPatientData(1, 120.0, "SystolicPressure", now);
-        storage.addPatientData(1, 125.0, "SystolicPressure", now + 1);
-        storage.addPatientData(1, 127.0, "SystolicPressure", now + 2);
-        storage.addPatientData(1, 130.0, "SystolicPressure", now + 3);
+        storage.addPatientData(1, 120.0, "SystolicPressure", now-300);
+        storage.addPatientData(1, 125.0, "SystolicPressure", now -200);
+        storage.addPatientData(1, 127.0, "SystolicPressure", now -100);
+        storage.addPatientData(1, 130.0, "SystolicPressure", now);
 
         TestableAlertGenerator generator = new TestableAlertGenerator(storage);
         Patient patient = storage.getAllPatients().get(0);
@@ -181,8 +181,8 @@ public class AlertGeneratorTest {
         DataStorage storage = new DataStorage();
         long now = System.currentTimeMillis();
 
-        storage.addPatientData(1, 97.0, "Saturation", now);
-        storage.addPatientData(1, 91.5, "Saturation", now + 300_000);
+        storage.addPatientData(2, 97.0, "Saturation", now - 200_000);
+        storage.addPatientData(2, 92.0, "Saturation", now - 100_000);
 
         TestableAlertGenerator generator = new TestableAlertGenerator(storage);
         Patient patient = storage.getAllPatients().get(0);
@@ -196,8 +196,8 @@ public class AlertGeneratorTest {
         DataStorage storage = new DataStorage();
         long now = System.currentTimeMillis();
 
-        storage.addPatientData(1, 97.0, "Saturation", now);
-        storage.addPatientData(1, 93.0, "Saturation", now + 300_000);
+        storage.addPatientData(3, 97.0, "Saturation", now - 300_000);
+        storage.addPatientData(3, 93.0, "Saturation", now);
 
         TestableAlertGenerator generator = new TestableAlertGenerator(storage);
         Patient patient = storage.getAllPatients().get(0);
@@ -209,9 +209,8 @@ public class AlertGeneratorTest {
     void testSaturationDropAfterTenMinutesDoesNotTriggerAlert() {
         DataStorage storage = new DataStorage();
         long now = System.currentTimeMillis();
-
-        storage.addPatientData(1, 97.0, "Saturation", now);
-        storage.addPatientData(1, 90.0, "Saturation", now + 700_000);
+        storage.addPatientData(4, 99.0, "Saturation", now - 700_000);
+        storage.addPatientData(4, 93.0, "Saturation", now);
 
         TestableAlertGenerator generator = new TestableAlertGenerator(storage);
         Patient patient = storage.getAllPatients().get(0);
