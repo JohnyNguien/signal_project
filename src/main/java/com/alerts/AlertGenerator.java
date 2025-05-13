@@ -1,13 +1,13 @@
 package com.alerts;
 
-import com.data_management.DataStorage;
-import com.data_management.Patient;
-import com.factory_method.AlertFactory;
-import com.factory_method.AlertType;
-import com.data_management.PatientRecord;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.data_management.DataStorage;
+import com.data_management.Patient;
+import com.data_management.PatientRecord;
+import com.factory_method.AlertFactory;
+import com.factory_method.AlertType;
 
 /**
  * The {@code AlertGenerator} class is responsible for monitoring patient data
@@ -70,10 +70,14 @@ public class AlertGenerator {
                 systolic.add(value);
                 systolicTimestamps.add(ts);
                 if (value > 180) {
-                    triggerAlert(new Alert(String.valueOf(patient.getPatientId()), type + " Too High", ts));
+                    AlertType factory = AlertFactory.getType(type);
+                    Alert alert = factory.createAlert(String.valueOf(patient.getPatientId()), type + " Too High", ts);
+                    triggerAlert(alert);
                 }
                 else if (value < 90) {
-                    triggerAlert(new Alert(String.valueOf(patient.getPatientId()), type + " Too Low", ts));
+                    AlertType factory = AlertFactory.getType(type);
+                    Alert alert = factory.createAlert(String.valueOf(patient.getPatientId()), type + " Too High", ts);
+                    triggerAlert(alert);
                     lowBP = true;
                 }
             }
@@ -83,10 +87,14 @@ public class AlertGenerator {
                 diastolic.add(value);
                 diastolicTimestamps.add(ts);
                 if (value > 120) {
-                    triggerAlert(new Alert(String.valueOf(patient.getPatientId()), type + " Too High", ts));
+                    AlertType factory = AlertFactory.getType(type);
+                    Alert alert = factory.createAlert(String.valueOf(patient.getPatientId()), type + " Too High", ts);
+                    triggerAlert(alert);
                 }
                 else if (value < 60) {
-                    triggerAlert(new Alert(String.valueOf(patient.getPatientId()), type + " Too Low", ts));
+                    AlertType factory = AlertFactory.getType(type);
+                    Alert alert = factory.createAlert(String.valueOf(patient.getPatientId()), type + " Too High", ts);
+                    triggerAlert(alert);
                 }
             }
 
@@ -96,19 +104,25 @@ public class AlertGenerator {
                 bloodSaturation.add(value);
                 bloodSaturationTimestamps.add(ts);
                 if (value < 92) {
-                    triggerAlert(new Alert(String.valueOf(patient.getPatientId()), type + " Too Low", ts));
+                    AlertType factory = AlertFactory.getType(type);
+                    Alert alert = factory.createAlert(String.valueOf(patient.getPatientId()), type + " Too High", ts);
+                    triggerAlert(alert);
                     lowO2 = true;
                 }
             }
             else if (type.equals("Alert")) {
-                triggerAlert(new Alert(String.valueOf(patient.getPatientId()), type, ts));
+                    AlertType factory = AlertFactory.getType(type);
+                    Alert alert = factory.createAlert(String.valueOf(patient.getPatientId()), type + " Too High", ts);
+                    triggerAlert(alert);
             }
             else if (type.equals("ECG")){
                 ecg.add(value);
                 ecgTimestamps.add(ts);
             }
             if (lowBP && lowO2) {
-                triggerAlert(new Alert(String.valueOf(patient.getPatientId()), "Hypotensive Hypoxemia", ts));
+                    AlertType factory = AlertFactory.getType(type);
+                    Alert alert = factory.createAlert(String.valueOf(patient.getPatientId()), type + " Too High", ts);
+                    triggerAlert(alert);
             }
 
         }
@@ -190,12 +204,6 @@ public class AlertGenerator {
      */
     protected void triggerAlert(Alert alert) {
         // Implementation might involve logging the alert or notifying staff
-        String condition_type = alert.getCondition();
-        AlertFactory alertFactory = new AlertFactory();
-
-        AlertType alertType = alertFactory.getType(condition_type);
-        alertType.createAlert(alert.getPatientId(), alert.getCondition(), alert.getTimestamp());
-
     }
 
 }

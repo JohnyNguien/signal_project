@@ -1,5 +1,7 @@
 package com.factory_method;
 
+import com.alerts.Alert;
+
 public interface AlertType {
-    void createAlert(String patientId, String condition, long timestamp);
+    Alert createAlert(String patientId, String condition, long timestamp);
 }

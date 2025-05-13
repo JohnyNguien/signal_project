@@ -1,8 +1,8 @@
 package com.factory_method;
 
 public class AlertFactory {
-    public AlertType getType(String condition){
-        if (condition.contains("StolicBloodPressure") || condition.contains("DiastolicBloodPressure")){
+    public static AlertType getType(String condition){
+        if (condition.contains("SystolicBloodPressure") || condition.contains("DiastolicBloodPressure")){
             return new BloodPressureAlertFactory();
         } else if (condition.contains("BloodSaturation")){
             return new BloodOxygenAlertFactory();
