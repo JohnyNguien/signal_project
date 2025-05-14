@@ -1,7 +1,7 @@
 package com.alerts;
 
 // Represents an alert
-public class Alert {
+public class Alert{
     private String patientId;
     private String condition;
     private long timestamp;
@@ -22,5 +22,13 @@ public class Alert {
 
     public long getTimestamp() {
         return timestamp;
+    }
+
+    public void send() {
+        // your “default” alert behavior:
+        System.out.printf(
+          "ALERT → patient=%s, condition=%s, at=%d%n",
+          patientId, condition, timestamp
+        );
     }
 }

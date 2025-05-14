@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import com.alerts.AlertGenerator;
 
 /**
@@ -14,6 +15,7 @@ import com.alerts.AlertGenerator;
  * patient IDs.
  */
 public class DataStorage {
+    private static final DataStorage INSTANCE = new DataStorage();
     private Map<Integer, Patient> patientMap; // Stores patient objects indexed by their unique patient ID.
 
     /**
@@ -22,6 +24,10 @@ public class DataStorage {
      */
     public DataStorage() {
         this.patientMap = new HashMap<>();
+    }
+
+    public static DataStorage getInstance() {
+        return INSTANCE;
     }
 
     /**
@@ -86,7 +92,7 @@ public class DataStorage {
     public static void main(String[] args) throws IOException {
         // DataReader is not defined in this scope, should be initialized appropriately.
         DataReader reader = new FileDataReader("path/to/data");
-        DataStorage storage = new DataStorage();
+        DataStorage storage = DataStorage.getInstance();
 
         // Assuming the reader has been properly initialized and can read data into the
         // storage

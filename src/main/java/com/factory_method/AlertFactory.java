@@ -1,14 +1,30 @@
 package com.factory_method;
 
 public class AlertFactory {
-    public static AlertType getType(String condition){
-        if (condition.contains("SystolicBloodPressure") || condition.contains("DiastolicBloodPressure")){
-            return new BloodPressureAlertFactory();
-        } else if (condition.contains("BloodSaturation")){
-            return new BloodOxygenAlertFactory();
-        } else if (condition.contains("ECG")){
-            return new ECGAlertFactory();
+
+    /**
+     * Factory Method lookup: returns the right subclass instance
+     * based on your record‐type string.
+     */
+    public static AlertType getFactory(String recordType) {
+        switch (recordType) {
+            case "SystolicPressure":
+                return new BloodPressureAlertFactory();
+            case "DiastolicPressure":
+                return new BloodPressureAlertFactory();
+            case "Saturation":
+                return new BloodOxygenAlertFactory();
+            case "ECG":
+                return new ECGAlertFactory();
+            case "HeartRate":
+                return new ECGAlertFactory();
+            default:
+                throw new IllegalArgumentException("Unknown record type: " + recordType);
         }
-        return null;
     }
+
+    public AlertType getType(String recordType) {
+        return AlertFactory.getFactory(recordType);
+    }
+
 }
