@@ -34,10 +34,36 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.java-websocket</groupId>
+            <artifactId>Java-WebSocket</artifactId>
+            <version>1.5.2</version>
+        </dependency>
+
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.11</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
 
             <!-- Spring Boot plugin -->
             <plugin>
@@ -52,7 +78,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.cardio_generator.HealthDataSimulator</mainClass>
+                    <mainClass>com.Main</mainClass>
                 </configuration>
             </plugin>
 
@@ -70,5 +96,7 @@
 
         </plugins>
     </build>
+
+
 
 </project>

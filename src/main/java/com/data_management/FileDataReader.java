@@ -2,13 +2,14 @@ package com.data_management;
 
 import java.io.*;
 
-public class FileDataReader implements DataReader{
+//outdated class just to show how it looked
+public class FileDataReader{
     private String path;
     public FileDataReader(String path){
         this.path = path;
     }
 
-    @Override
+
     public void readData(DataStorage dataStorage) throws IOException {
         File folder = new File(path);
         File[] files = folder.listFiles();
